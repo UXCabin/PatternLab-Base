@@ -1,56 +1,48 @@
-![Pattern Lab Logo](https://github.com/pattern-lab/patternlab-node/raw/master/patternlab.png 'Pattern Lab Logo')
+# Pattern Lab Base
 
-![current release](https://img.shields.io/npm/v/@pattern-lab/edition-node-gulp.svg)
-![license](https://img.shields.io/github/license/pattern-lab/patternlab-node.svg) [![Join the chat at Gitter](https://badges.gitter.im/pattern-lab/node.svg)](https://gitter.im/pattern-lab/node)
+### Before you get started
+- Keep all your work and assets in the `source` folder, since `public` will **BE WIPED** each time a production version is built. This includes images and fonts
+- Don't use default `patternlab:serve`, as it will not watch or compile `.scss` files
+- Use the same style as the examples, so `main.scss` file with `_other.scss` files `@imported` into it
 
-# Pattern Lab Node - Gulp Edition
+### Avoid a headache
+- **NEVER** add a space between an include and a parameter, else the console will fill up with warnings. I'm working on a fix for this, meanwhile:
+  - Wrong: `{{< atoms-button (class="primary") }}`  
+  - Right: `{{< atoms-button(class="primary") }}`  
 
-The Gulp wrapper around [Pattern Lab Node Core](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core)), the default PatternEngine, and supporting frontend assets.
 
-[Online Demo of Pattern Lab Output](http://demo.patternlab.io/)
+- **ALWAYS** use plurals for `atoms`, `molecules` etc. Using `atom` will fill the console with warnings
 
-## Packaged Components
+- The following, when added to Sublime preferences, will remove those folders from "go to anything" `CMD + T` indexing. If you don't want to exclude `git` or `node_modules` folders, that's fine, but I strongly recommend you exclude `public` folder, otherwise you will constantly be jumping to wrong files, and you work will be overwritten or not showing up. In Sublime, `CMD + ,`, and just copy the following line to the user preferences:
+  - `"binary_file_patterns": ["public/*", ".git/*", "node_modules/*"],`
 
-This Edition comes with the following components:
 
-* `@pattern-lab/core`: [GitHub](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core) | [npm](https://www.npmjs.com/package/@pattern-lab/core)
-* `@pattern-lab/engine-mustache`: [GitHub](https://github.com/pattern-lab/tree/master/packages/engine-mustache) | [npm](https://www.npmjs.com/package/@pattern-lab/engine-mustache)
-* `@pattern-lab/uikit-workshop`: [GitHub](https://github.com/pattern-lab/tree/master/packages/uikit-workshop) | [npm](https://www.npmjs.com/package/@pattern-lab/uikit-workshop)
 
-## Prerequisites
+### How to use
+Just fork the repository and run `npm install`. You're all set.
 
-This Edition uses [Node](https://nodejs.org) for core processing, [npm](https://www.npmjs.com/) to manage project dependencies, and [gulp.js](http://gulpjs.com/) to run tasks and interface with the core library. You can follow the directions for [installing Node](https://nodejs.org/en/download/) on the Node website if you haven't done so already. Installation of Node will include npm.
+### Gulp commands
 
-## Installing
+`gulp` - for development  
+`gulp production` for final build and deliverables
 
-Pattern Lab Node can be used different ways. Editions like this one are **example** pairings of Pattern Lab code and do not always have an upgrade path or simple means to run as a dependency within a larger project. Users wishing to be most current and have the greatest flexibility are encouraged to consume `patternlab-node` directly. Users wanting to learn more about Pattern Lab and have a tailored default experience are encouraged to start with an Edition. Both methods still expect to interact with other elements of the [Pattern Lab Ecosystem](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core#ecosystem).
 
-Read the [installation instructions](https://github.com/pattern-lab/patternlab-node/tree/master#installation).
+### Requires
 
-## Getting Started
+[Node](https://nodejs.org)  
+[gulp 4](http://gulpjs.com/) - Make sure it's 4. `npm i -g gulp@4` will install it globally.
 
-This edition comes pre-packaged with a couple simple gulp tasks. Extend them as needed.
 
-**build** patterns, copy assets, and construct ui
 
-```bash
-gulp patternlab:build
-```
+### Includes
 
-build patterns, copy assets, and construct ui, watch source files, and **serve** locally
+- Patternlab v3.0
+- Bootstrap v4.0.0
+- Basic folder structure and some example files
 
-```bash
-gulp patternlab:serve
-```
 
-logs Pattern Lab Node usage and **help** content
+### Pattern Lab Base v1.0 changelog
 
-```bash
-gulp patternlab:help
-```
-
-To interact further with Pattern Lab Node, such as to install plugins or starterkits, check out the rest of the `gulpfile.js`. You could also install the [Pattern Lab Node Command Line Interface](https://github.com/pattern-lab/patternlab-node/tree/master/packages/cli) or learn more about the [core API](https://github.com/pattern-lab/patternlab-node/tree/master/packages/core#usage).
-
-## Updating Pattern Lab
-
-To update Pattern Lab please refer to each component's GitHub repository, and the [master instructions for core](https://github.com/pattern-lab/patternlab-node/wiki/Upgrading). The components are listed at the top of the README.
+- Added SCSS notifier, system default and command line notifications when a build fails (this will not stop watcher, it'll simply alert the user)  
+- Added SCSS watcher to compile `.scss` files, runs in parallel to `patternlab:serve`
+- Added custom asset migration for `gulp production`

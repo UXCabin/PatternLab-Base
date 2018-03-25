@@ -14,10 +14,7 @@ const sass = require('gulp-sass');
 const gutil = require('gulp-util');
 const prefix = require('gulp-autoprefixer');
 const rename = require('gulp-rename');
-
-const messages = {
-  cssError: '<span style="color: grey">CSS SYNTAX</span> SCSS build error',
-};
+const path = require('path');
 
 
 /******************************************************
@@ -82,6 +79,73 @@ gulp.task('sass:watch', function () {
   gulp.watch('source/scss/*.scss', gulp.series('sass'));
 });
 
+
+// JS copy
+gulp.task('build-copy:js', function(){
+  return gulp.src('**/*.js', {cwd: path.resolve(paths().source.js)} )
+    .pipe(gulp.dest(path.resolve(paths().public.js)));
+});
+
+// Images copy
+gulp.task('build-copy:img', function(){
+  return gulp.src('**/*.*',{cwd: path.resolve(paths().source.images)} )
+    .pipe(gulp.dest(path.resolve(paths().public.images)));
+});
+
+// Favicon copy
+gulp.task('build-copy:favicon', function(){
+  return gulp.src('favicon.ico', {cwd: path.resolve(paths().source.root)} )
+    .pipe(gulp.dest(path.resolve(paths().public.root)));
+});
+
+// Fonts copy
+gulp.task('build-copy:font', function(){
+  return gulp.src('*', {cwd: path.resolve(paths().source.fonts)})
+    .pipe(gulp.dest(path.resolve(paths().public.fonts)));
+});
+
+// Styleguide Copy everything but css
+gulp.task('build-copy:styleguide', function(){
+  return gulp.src(path.resolve(paths().source.styleguide, '**/!(*.css)'))
+    .pipe(gulp.dest(path.resolve(paths().public.root)))
+    .pipe(browserSync.stream());
+});
+
+gulp.task('build-copy:css', function(){
+  return gulp.src(path.resolve(paths().source.css, '*.css'))
+    .pipe(gulp.dest(path.resolve(paths().public.css)))
+    .pipe(browserSync.stream());
+});
+
+gulp.task('build-copy:styleguide-css', function(){
+  return gulp.src(path.resolve(paths().source.styleguide, '**/*.css'))
+    .pipe(gulp.dest(function(file){
+      //flatten anything inside the styleguide into a single output dir per http://stackoverflow.com/a/34317320/1790362
+      file.path = path.join(file.base, path.basename(file.path));
+      return path.resolve(path.join(paths().public.styleguide, 'css'));
+    }))
+    .pipe(browserSync.stream());
+});
+
+
+gulp.task('asset-builder', gulp.series(
+  gulp.parallel(
+    'build-copy:js',
+    'build-copy:img',
+    'build-copy:favicon',
+    'build-copy:font',
+    gulp.series('sass', 'build-copy:css', function(done){done();}),
+    'build-copy:styleguide',
+    'build-copy:styleguide-css'
+  ),
+  function(done){
+    done();
+  })
+);
+
+
+
+
 function build() {
   return patternlab
     .build({
@@ -102,6 +166,11 @@ function serve() {
       // do something else when this promise resolves
     });
 }
+
+function paths() {
+  return config.paths;
+}
+
 
 gulp.task('patternlab:version', function() {
   patternlab.version();
@@ -146,4 +215,12 @@ gulp.task('default', gulp.parallel(
 	'patternlab:serve'
 	)
 );
+
+gulp.task('production', gulp.series('asset-builder', build, function(done){
+  done();
+}));
+
+
+
+
 
