@@ -29,7 +29,7 @@ Just fork the repository and run `npm install`. You're all set.
 
 ### Requires
 
-[Node](https://nodejs.org)  
+[Node](https://nodejs.org) - Make sure it's 5.8.0 or higher
 [gulp 4](http://gulpjs.com/) - Make sure it's 4. `npm i -g gulp@4` will install it globally.
 
 
